@@ -1,61 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reportes del Juego</title>
-  <link rel="stylesheet" href="index.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reportes NoSQL</title>
+  <link rel="stylesheet" href="index.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-<h1>📊 Reportes del Juego Online</h1>
+<div class="container">
+  <h1>Panel de Reportes</h1>
 
-<section>
-  <button onclick="getRanking()">🏆 Ver Ranking de Jugadores</button>
-  <button onclick="getHistorial('j1')">📜 Historial de Vitt (j1)</button>
-  <button onclick="getPartidasActivas()">🕹️ Partidas Activas</button>
-  <button onclick="getEventos('p1')">⚔️ Eventos de Partida p1</button>
-  <button onclick="getAbandonos()">🚪 Top Abandonos</button>
-</section>
+  <div class="buttons">
+    <button class="report-button" data-report="1">Reporte 1</button>
+    <button class="report-button" data-report="2">Reporte 2</button>
+    <button class="report-button" data-report="3">Reporte 3</button>
+    <button class="report-button" data-report="4">Reporte 4</button>
+    <button class="report-button" data-report="5">Reporte 5</button>
+  </div>
 
-<section id="resultado">
-  <h2>Resultado:</h2>
-  <pre id="output"></pre>
-</section>
+  <div id="output" class="table-container"></div>
 
-<script>
-  const output = document.getElementById("output");
-  const baseUrl = "http://localhost:3000";
+  <div id="chart-container" style="max-width: 800px; margin: 40px auto;">
+    <canvas id="chart"></canvas>
+  </div>
+</div>
 
-  async function fetchData(url) {
-    output.textContent = "Cargando...";
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      output.textContent = JSON.stringify(data, null, 2);
-    } catch (err) {
-      output.textContent = "Error: " + err.message;
-    }
-  }
-
-  function getRanking() {
-    fetchData(`${baseUrl}/ranking`);
-  }
-
-  function getHistorial(jugadorId) {
-    fetchData(`${baseUrl}/historial/${jugadorId}`);
-  }
-
-  function getPartidasActivas() {
-    fetchData(`${baseUrl}/activas`);
-  }
-
-  function getEventos(partidaId) {
-    fetchData(`${baseUrl}/eventos/${partidaId}`);
-  }
-
-  function getAbandonos() {
-    fetchData(`${baseUrl}/abandonos`);
-  }
-</script>
+<script src="script.js"></script>
 </body>
 </html>

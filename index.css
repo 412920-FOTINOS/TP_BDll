@@ -1,48 +1,77 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f4f4f4;
-    color: #333;
-    padding: 2rem;
-    line-height: 1.6;
+    background-color: #1e1e2f;
+    color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #2e2e3e;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
 }
 
 h1 {
     text-align: center;
-    color: #1e88e5;
+    color: #61dafb;
+    margin-bottom: 30px;
 }
 
-section {
-    max-width: 800px;
-    margin: 2rem auto;
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.buttons {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-button {
-    display: block;
-    width: 100%;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-    color: white;
-    background-color: #1e88e5;
+.report-button {
+    background-color: #61dafb;
+    color: #1e1e2f;
+    font-weight: bold;
     border: none;
-    border-radius: 5px;
+    padding: 12px 20px;
+    margin: 10px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #1565c0;
+.report-button:hover {
+    background-color: #21a1f1;
 }
 
-pre {
-    background: #eee;
-    padding: 1rem;
-    border-radius: 5px;
-    max-height: 400px;
-    overflow-y: auto;
-    white-space: pre-wrap;
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 40px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #3e3e50;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+thead {
+    background-color: #61dafb;
+    color: #1e1e2f;
+}
+
+th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #555;
+}
+
+tbody tr:hover {
+    background-color: #4c4c60;
+}
+
+#chart-container {
+    background-color: #3a3a4a;
+    padding: 20px;
+    border-radius: 12px;
 }

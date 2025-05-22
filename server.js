@@ -5,6 +5,8 @@ const { MongoClient, ObjectId } = require("mongodb");
 
 const app = express();
 const PORT = 3000;
+const { getReporte } = require("./reportes");
+
 
 app.use(cors());
 
@@ -63,6 +65,16 @@ app.get("/abandonos", async (req, res) => {
         { $sort: { conteo: -1 } }
     ]).toArray();
     res.json(result);
+});
+
+app.get("/reportes/:id", async (req, res) => {
+    try {
+        const data = await getReporte(db, req.params.id);
+        res.json(data);
+    } catch (error) {
+        console.error("Error al obtener reporte:", error);
+        res.status(404).json({ error: "Reporte no encontrado o error interno." });
+    }
 });
 
 app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
