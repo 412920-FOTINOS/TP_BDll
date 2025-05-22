@@ -1,8 +1,18 @@
-
 const { MongoClient } = require("mongodb");
 
 const uri = "mongodb://localhost:27017";
 const client = new MongoClient(uri);
+
+const ESTADOS = ["jugando", "ganador", "perdedor", "abandonado"];
+const ACCIONES = ["movimiento", "ataque", "defensa", "abandono", "uso_habilidad"];
+
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomFromArray(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
 
 async function seed() {
     try {
@@ -14,58 +24,61 @@ async function seed() {
         await db.collection("partidas").deleteMany({});
         await db.collection("eventos").deleteMany({});
 
-        // Jugadores
-        const jugadores = [
-            { id: "j1", nombre: "TotoVittorio", puntaje: 1500 },
-            { id: "j2", nombre: "DoubleTonka", puntaje: 1400 },
-            { id: "j3", nombre: "PetisoOrejudo", puntaje: 1200 },
-            { id: "j4", nombre: "El_Rey_Del_Mewing", puntaje: 1600 },
-            { id: "j5", nombre: "Farruko", puntaje: 1100 },
-            { id: "j6", nombre: "GagaMan", puntaje: 600 },
-        ];
+        // Generar 50 jugadores
+        const jugadores = [];
+        for (let i = 1; i <= 50; i++) {
+            jugadores.push({
+                id: `j${i}`,
+                nombre: `Jugador_${i}`,
+                puntaje: randomInt(100, 2000)
+            });
+        }
         await db.collection("jugadores").insertMany(jugadores);
 
-        // Partidas
-        const partidas = [
-            {
-                _id: "p1",
-                estado: "activa",
-                jugadores: [
-                    { id: "j1", estado: "jugando" },
-                    { id: "j2", estado: "jugando" },
-                    { id: "j3", estado: "abandonado" },
-                ]
-            },
-            {
-                _id: "p2",
-                estado: "finalizada",
-                jugadores: [
-                    { id: "j4", estado: "ganador" },
-                    { id: "j5", estado: "perdedor" },
-                ]
-            },
-            {
-                _id: "p3",
-                estado: "activa",
-                jugadores: [
-                    { id: "j1", estado: "jugando" },
-                    { id: "j4", estado: "jugando" },
-                    { id: "j6", estado: "jugando" },
-                ]
+        // Generar 20 partidas
+        const partidas = [];
+        for (let i = 1; i <= 20; i++) {
+            const cantidadJugadores = randomInt(2, 5);
+            const jugadoresPartida = [];
+            const usados = new Set();
+
+            while (jugadoresPartida.length < cantidadJugadores) {
+                const idx = randomInt(1, 50);
+                if (!usados.has(idx)) {
+                    usados.add(idx);
+                    jugadoresPartida.push({
+                        id: `j${idx}`,
+                        estado: randomFromArray(ESTADOS)
+                    });
+                }
             }
-        ];
+
+            partidas.push({
+                _id: `p${i}`,
+                estado: i % 3 === 0 ? "finalizada" : "activa",
+                jugadores: jugadoresPartida
+            });
+        }
         await db.collection("partidas").insertMany(partidas);
 
-        // ebentos onichan uwu
-        const eventos = [
-            { partidaId: "p1", accion: "movimiento", jugador: "j1", timestamp: new Date("2023-01-01T10:00:00Z") },
-            { partidaId: "p1", accion: "ataque", jugador: "j2", timestamp: new Date("2023-01-01T10:01:00Z") },
-            { partidaId: "p1", accion: "abandono", jugador: "j3", timestamp: new Date("2023-01-01T10:02:00Z") },
-            { partidaId: "p3", accion: "movimiento", jugador: "j1", timestamp: new Date("2023-01-02T12:00:00Z") },
-        ];
+        // Generar 200 eventos
+        const eventos = [];
+        for (let i = 0; i < 200; i++) {
+            const partidaId = `p${randomInt(1, 20)}`;
+            const jugadorId = `j${randomInt(1, 50)}`;
+            const accion = randomFromArray(ACCIONES);
+            const timestamp = new Date(Date.now() - randomInt(0, 1000000000));
+
+            eventos.push({
+                partidaId,
+                jugador: jugadorId,
+                accion,
+                timestamp
+            });
+        }
         await db.collection("eventos").insertMany(eventos);
 
-        console.log("✅ Base de datos poblada con éxito.");
+        console.log("✅ Base de datos poblada con muchos datos para testeo y gráficos.");
     } catch (err) {
         console.error("❌ Error al poblar la base de datos:", err);
     } finally {
