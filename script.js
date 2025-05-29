@@ -11,10 +11,16 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 const res = await fetch(`http://localhost:3000/reportes/${reportId}`);
                 const data = await res.json();
+
                 output.innerHTML = generateTable(data);
                 generateChart(data, reportId);
             } catch (error) {
-                output.innerHTML = "<p>Error al cargar el reporte</p>";
+                console.error("Error al cargar el reporte:", error);
+                output.innerHTML = "<p>Error al cargar el reporte.</p>";
+                if (chartInstance) {
+                    chartInstance.destroy();
+                    chartInstance = null;
+                }
             }
         });
     });
@@ -46,7 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return table;
     }
 
-
     function generateChart(data, reportId) {
         if (chartInstance) chartInstance.destroy();
 
@@ -54,9 +59,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const dataset = Array.isArray(data) ? data : [data];
 
+        // Determinar claves automáticamente
         const keys = Object.keys(dataset[0]);
-        const labels = dataset.map((d) => d[keys[0]]);
-        const values = dataset.map((d) => typeof d[keys[1]] === "number" ? d[keys[1]] : 0);
+
+        // Validar que haya al menos 2 columnas
+        if (keys.length < 2) return;
+
+        const labelKey = keys[0];
+        const valueKey = keys[1];
+
+        const labels = dataset.map((d) => d[labelKey]);
+        const values = dataset.map((d) => typeof d[valueKey] === "number" ? d[valueKey] : 0);
 
         const ctx = document.getElementById("chart").getContext("2d");
 
@@ -65,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data: {
                 labels,
                 datasets: [{
-                    label: keys[1],
+                    label: valueKey,
                     data: values,
                     backgroundColor: "rgba(54, 162, 235, 0.6)",
                     borderColor: "rgba(54, 162, 235, 1)",
@@ -74,13 +87,21 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             options: {
                 responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `Reporte ${reportId}`
+                    }
+                },
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
                     }
                 }
             }
         });
     }
-
 });
