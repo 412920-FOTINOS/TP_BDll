@@ -1,4 +1,3 @@
-// models.js
 const mongoose = require("mongoose");
 
 const jugadorSchema = new mongoose.Schema({
@@ -24,8 +23,8 @@ const eventoSchema = new mongoose.Schema({
     timestamp: Date
 });
 
-const Jugador = mongoose.model("Jugador", jugadorSchema);
-const Partida = mongoose.model("Partida", partidaSchema);
-const Evento = mongoose.model("Evento", eventoSchema);
+const JugadorModel = mongoose.model("Jugador", jugadorSchema);
+const PartidaModel = mongoose.model("Partida", partidaSchema);
+const EventoModel = mongoose.model("Evento", eventoSchema);
 
-module.exports = { Jugador, Partida, Evento };
+module.exports = { JugadorModel, PartidaModel, EventoModel };
