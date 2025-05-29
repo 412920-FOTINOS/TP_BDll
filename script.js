@@ -20,30 +20,45 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function generateTable(data) {
-        if (!data.length) return "<p>No hay datos.</p>";
+        if (!data || typeof data !== "object") return "<p>No hay datos.</p>";
 
-        const headers = Object.keys(data[0]);
+        const isArray = Array.isArray(data);
+
+        if (isArray && data.length === 0) return "<p>No hay datos.</p>";
+
+        let rows = isArray ? data : [data];
+
+        const keys = Object.keys(rows[0]);
         let table = "<table><thead><tr>";
-        headers.forEach((h) => (table += `<th>${h}</th>`));
+        keys.forEach((k) => (table += `<th>${k}</th>`));
         table += "</tr></thead><tbody>";
-        data.forEach((row) => {
+
+        rows.forEach((row) => {
             table += "<tr>";
-            headers.forEach((h) => (table += `<td>${row[h]}</td>`));
+            keys.forEach((k) => {
+                const val = typeof row[k] === "object" ? JSON.stringify(row[k]) : row[k];
+                table += `<td>${val}</td>`;
+            });
             table += "</tr>";
         });
+
         table += "</tbody></table>";
         return table;
     }
 
+
     function generateChart(data, reportId) {
         if (chartInstance) chartInstance.destroy();
 
-        if (!data.length) return;
+        if (!data || typeof data !== "object") return;
+
+        const dataset = Array.isArray(data) ? data : [data];
+
+        const keys = Object.keys(dataset[0]);
+        const labels = dataset.map((d) => d[keys[0]]);
+        const values = dataset.map((d) => typeof d[keys[1]] === "number" ? d[keys[1]] : 0);
 
         const ctx = document.getElementById("chart").getContext("2d");
-        const keys = Object.keys(data[0]);
-        const labels = data.map((d) => d[keys[0]]);
-        const values = data.map((d) => typeof d[keys[1]] === 'number' ? d[keys[1]] : 0);
 
         chartInstance = new Chart(ctx, {
             type: "bar",
@@ -67,4 +82,5 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
 });
